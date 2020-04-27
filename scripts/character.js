@@ -13,18 +13,18 @@ class Character {
       x: 20,
       y: 30
     }
-    this.gravity = 10;
-    this.friction = 15;
+    this.gravity = 30;
+    this.friction = 20;
   } 
 
   jump () {
-    this.velocity.y = -5;
+    this.velocity.y = -20;
   }
 
   move (direction) {
     const multiplierMap = { left: -1, right: 1 };
     const multiplier = multiplierMap[direction];
-    this.velocity.x = multiplier * 5;
+    this.velocity.x = multiplier * 10;
   }
 
   runLogic () {
@@ -36,8 +36,8 @@ class Character {
       friction
     } = this;
     let newVelocity = {
-      x: velocity.x / (1 + friction / 1000 * 16),
-      y: velocity.y + (gravity / 1000 * 16)
+      x: velocity.x / (1 + friction / 1000 * 6),
+      y: velocity.y + (gravity / 500 * 30)
     };
     if (newVelocity.x) {
       debugger;
