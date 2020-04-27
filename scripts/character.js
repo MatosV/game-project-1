@@ -13,21 +13,28 @@ class Character {
       x: 20,
       y: 30
     }
-    this.gravity = 30;
-    this.friction = 20;
+    this.gravity = 10;
+    this.friction = 15;
   } 
 
   jump () {
-    this.velocity.y = -20;
+    if (!this.jumping) {
+      this.velocity.y = -5;
+      this.jumping = true;
+    }
   }
 
   move (direction) {
     const multiplierMap = { left: -1, right: 1 };
     const multiplier = multiplierMap[direction];
-    this.velocity.x = multiplier * 10;
+    this.velocity.x = multiplier * 5;
   }
 
   runLogic () {
+
+    let runningDirection = 0;
+    const activeControls = this.game.setControlBindings.active;
+        
     const {
       position,
       dimensions,
@@ -36,12 +43,9 @@ class Character {
       friction
     } = this;
     let newVelocity = {
-      x: velocity.x / (1 + friction / 1000 * 6),
-      y: velocity.y + (gravity / 500 * 30)
+      x: velocity.x / (1 + friction / 1000 * 6) + runningDirection * 0.5,
+      y: velocity.y + (gravity / 1000 * 16)
     };
-    if (newVelocity.x) {
-      debugger;
-    }
     let newPosition = {
       x: position.x + newVelocity.x,
       y: position.y + newVelocity.y
@@ -64,6 +68,7 @@ class Character {
       if (verticalIntersection) {
         newVelocity.y = 0;
         newPosition.y = position.y;
+        this.jumping = false;
       }
       if (horizontalIntersection) {
         newVelocity.x = 0;
@@ -79,6 +84,7 @@ class Character {
 
   draw () {
     const context = this.game.context;
+    const $canvas = context.canvas;
     const {
       position: { x, y },
       dimensions: { x: width, y: height }

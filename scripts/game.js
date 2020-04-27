@@ -37,7 +37,7 @@ class Game {
   start() {
     this.background = new Background(this);
     this.character = new Character(this);
-    this.obstacles = [];
+    this.obstacles = [] ;
     this.randomizeObstacles();
     this.loop();
   }
