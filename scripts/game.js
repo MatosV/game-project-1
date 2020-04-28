@@ -20,13 +20,13 @@ class Game {
         const value = codeMap[code];
         switch (value) {
           case 'space':
-            console.log('space')
+            //console.log('space')
             this.character.jump();
             break;
           case 'left':
-            console.log('left')
+            //console.log('left')
           case 'right':
-            console.log('right')
+            //console.log('right')
             this.character.move(value);
             break;
         }
@@ -37,6 +37,7 @@ class Game {
   start() {
     this.background = new Background(this);
     this.character = new Character(this);
+    this.dzone = new Dzone(this);
     this.obstacles = [] ;
     this.randomizeObstacles();
     this.loop();

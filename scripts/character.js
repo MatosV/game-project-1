@@ -1,6 +1,10 @@
 class Character {
   constructor (game) {
     this.game = game;
+    
+    const $canvas = document.querySelector('canvas');
+    const context= $canvas.getContext('2d');
+
     this.position = {
       x: 1052,
       y: 120
@@ -43,7 +47,7 @@ class Character {
       friction
     } = this;
     let newVelocity = {
-      x: velocity.x / (1 + friction / 1000 * 6) + runningDirection * 0.5,
+      x: velocity.x / (1 + friction / 15000 * 6) + runningDirection * 0.5,
       y: velocity.y + (gravity / 1000 * 16)
     };
     let newPosition = {
