@@ -82,7 +82,37 @@ class Character {
 
     Object.assign(this.velocity, newVelocity);
     Object.assign(this.position, newPosition);
+  
+
+  for (let dz of this.game.dzone) {
+    const horizontalIntersection = dz.cIntersection({
+      position: {
+        ...position,
+        x: newPosition.x
+      },
+      dimensions
+    });
+    const verticalIntersection = dz.cIntersection({
+      position: {
+        ...position,
+        y: newPosition.y
+      },
+      dimensions
+    });
+    if (verticalIntersection) {
+      newVelocity.y = 0;
+      newPosition.y = position.y;
+      this.jumping = false;
+    }
+    if (horizontalIntersection) {
+      newVelocity.x = 0;
+      newPosition.x = position.x;
+    }
   }
+
+  Object.assign(this.velocity, newVelocity);
+  Object.assign(this.position, newPosition);
+}
 
 
 

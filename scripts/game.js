@@ -35,11 +35,11 @@ class Game {
   }
 
   start() {
-    this.background = new Background(this);
     this.character = new Character(this);
-    this.dzone = new Dzone(this);
     this.obstacles = [] ;
+    this.dzone = [];
     this.randomizeObstacles();
+    this.dzoneChain();
     this.loop();
   }
 
@@ -153,6 +153,110 @@ class Game {
       
   }
 
+  dzoneChain() {
+    const width = this.$canvas.width;
+    const height = this.$canvas.height;
+    
+    //TOP CHAIN
+    const chain = new Dzone(this, {
+        x: 800,
+        y: 10 ,
+        width: 60,
+        height: 80,
+      });
+      this.dzone.push(chain );
+
+    const chain2 = new Dzone(this, {
+        x: 500,
+        y: 10 ,
+        width: 120,
+        height: 80,
+      });      
+      this.dzone.push(chain2);
+
+    const chain3 = new Dzone(this, {
+        x: 230,
+        y: 10 ,
+        width: 90,
+        height: 80,
+      });
+      this.dzone.push(chain3);
+    
+      const chain4 = new Dzone(this, {
+        x: 10,
+        y: 10 ,
+        width: 60,
+        height: 80,
+      });
+      this.dzone.push(chain4);
+
+      //MID CHAIN
+      const chain5 = new Dzone(this, {
+        x: 220,
+        y: 280 ,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain5);
+
+      const chain6 = new Dzone(this, {
+        x: 580,
+        y: 280 ,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain6);
+
+      const chain7 = new Dzone(this, {
+        x: 820,
+        y: 280 ,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain7);
+
+      //BOTTOM CHAIN
+      const chain8 = new Dzone(this, {
+        x: 220,
+        y: 470,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain8);
+
+      const chain9 = new Dzone(this, {
+        x: 580,
+        y: 470,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain9);
+
+      const chain10 = new Dzone(this, {
+        x: 820,
+        y: 470,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain10);
+
+      const chain11 = new Dzone(this, {
+        x: 220,
+        y: 560,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain11);
+
+      const chain12 = new Dzone(this, {
+        x: 820,
+        y: 560,
+        width: 80,
+        height: 40,
+      });
+      this.dzone.push(chain12);
+  }
+
   runLogic () {
     this.character.runLogic();
   }
@@ -164,6 +268,7 @@ class Game {
 
   draw () {
     for (let obstacle of this.obstacles) obstacle.draw();
+    for (let dz of this.dzone) dz.draw();
     this.character.draw();
   }
 

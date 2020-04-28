@@ -1,34 +1,56 @@
+const cIntersection = (first, second) => {
+  const intersectionDirections = [];
+  const intersectionAxis = [];
+  return (
+    first.bottom > second.top &&
+    first.top < second.bottom &&
+    first.right > second.left &&
+    first.left < second.right
+  );
+}
+
+const gCoordinates = object => ({
+  top: object.position.y,
+  right: object.position.x + object.dimensions.x,
+  bottom: object.position.y + object.dimensions.y,
+  left: object.position.x,
+  ...object
+});
+
 class Dzone {
-  constructor (game, x, y) {
+  constructor (game, { x, y, width, height }) {
     this.game = game;
+    this.position = { x, y };
+    this.dimensions = { x: width, y: height };
 
-    this.x = x;
-    this.y = y;
-
-    this.speed = 1;
-
-    this.width = 25;
-    this.height = 50;
-   
-  } 
-  
-  collision (character) {
-    return (
-      character.x + character.width / 2 > this.x - this.width / 2 &&
-      character.x - character.width / 2 < this.x + this.width / 2 &&
-      character.y + character.height / 2 > this.y - this.height / 2 &&
-      character.y - character.height / 2 < this.y + this.height / 2
-    );
+    //this.move = {initialPosittion, finalPosition}
   }
 
-  runLogic () {
-    this.x -= this.speed;
+  cIntersection (character) {
+    const dzone = this;
+    const characterBlock = gCoordinates(character);
+    const dzoneBlock = gCoordinates(dzone);
+    const intersection = cIntersection(characterBlock, dzoneBlock);
+    return intersection;
+  }
+
+  loopPath() {
+
   }
 
   draw () {
-    context.fillRect(this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
-  }
-  
-}
+    const context = this.game.context;
+    const {
+      position: { x, y },
+      dimensions: { x: width, y: height },
+    } = this;
 
+    context.save();
+
+    context.fillStyle = 'green';
+    context.fillRect(x, y, width, height);
+
+    context.restore();
+  }
+}
 
