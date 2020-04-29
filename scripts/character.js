@@ -1,9 +1,6 @@
 class Character {
-  constructor (game) {
+  constructor(game) {
     this.game = game;
-    
-    const $canvas = document.querySelector('canvas');
-    const context= $canvas.getContext('2d');
 
     this.position = {
       x: 1052,
@@ -16,39 +13,34 @@ class Character {
     this.dimensions = {
       x: 20,
       y: 30
-    }
+    };
     this.gravity = 10;
-    this.friction = 15;
-  } 
+    this.friction = 95;
+  }
 
-  jump () {
+  jump() {
     if (!this.jumping) {
       this.velocity.y = -5;
       this.jumping = true;
     }
   }
 
-  move (direction) {
+  move(direction) {
     const multiplierMap = { left: -1, right: 1 };
     const multiplier = multiplierMap[direction];
     this.velocity.x = multiplier * 5;
   }
 
-  runLogic () {
+  runLogic() {
+    const context = this.game.context;
 
     let runningDirection = 0;
     const activeControls = this.game.setControlBindings.active;
-        
-    const {
-      position,
-      dimensions,
-      velocity,
-      gravity,
-      friction
-    } = this;
+
+    const { position, dimensions, velocity, gravity, friction } = this;
     let newVelocity = {
-      x: velocity.x / (1 + friction / 15000 * 6) + runningDirection * 0.5,
-      y: velocity.y + (gravity / 1000 * 16)
+      x: velocity.x / (1 + (friction / 1000) * 1) + runningDirection * 0.5,
+      y: velocity.y + (gravity / 1000) * 20
     };
     let newPosition = {
       x: position.x + newVelocity.x,
@@ -82,46 +74,29 @@ class Character {
 
     Object.assign(this.velocity, newVelocity);
     Object.assign(this.position, newPosition);
-  
 
-  for (let dz of this.game.dzone) {
-    const horizontalIntersection = dz.cIntersection({
-      position: {
-        ...position,
-        x: newPosition.x
-      },
-      dimensions
-    });
-    const verticalIntersection = dz.cIntersection({
-      position: {
-        ...position,
-        y: newPosition.y
-      },
-      dimensions
-    });
-    if (verticalIntersection) {
-      newVelocity.y = 0;
-      newPosition.y = position.y;
-      this.jumping = false;
-    }
-    if (horizontalIntersection) {
-      newVelocity.x = 0;
-      newPosition.x = position.x;
+    for (let dz of this.game.dzone) {
+      const horizontalIntersection = dz.cIntersection({
+        position,
+        dimensions
+      });
+      const verticalIntersection = dz.cIntersection({
+        position,
+        dimensions
+      });
+
+      if (horizontalIntersection && verticalIntersection) {
+        console.log('Game over');
+        this.game.gameOver();
+      }
     }
   }
 
-  Object.assign(this.velocity, newVelocity);
-  Object.assign(this.position, newPosition);
-}
-
-
-
-  draw () {
+  draw() {
     const context = this.game.context;
-    const $canvas = context.canvas;
     const {
-      position: { x, y },
-      dimensions: { x: width, y: height }
+      position: { x, y },
+      dimensions: { x: width, y: height }
     } = this;
 
     context.save();

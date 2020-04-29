@@ -7,9 +7,9 @@ const cIntersection = (first, second) => {
     first.right > second.left &&
     first.left < second.right
   );
-}
+};
 
-const gCoordinates = object => ({
+const gCoordinates = (object) => ({
   top: object.position.y,
   right: object.position.x + object.dimensions.x,
   bottom: object.position.y + object.dimensions.y,
@@ -18,15 +18,16 @@ const gCoordinates = object => ({
 });
 
 class Dzone {
-  constructor (game, { x, y, width, height }) {
+  constructor(game, { x, y, width, height, direction, limit, speedX = 5, speedY = 5 }) {
     this.game = game;
-    this.position = { x, y };
+    this.position = { x, y };
     this.dimensions = { x: width, y: height };
-
-    //this.move = {initialPosittion, finalPosition}
+    this.speed = { x: speedX, y: speedY };
+    this.direction = direction;
+    this.limit = limit;
   }
 
-  cIntersection (character) {
+  cIntersection(character) {
     const dzone = this;
     const characterBlock = gCoordinates(character);
     const dzoneBlock = gCoordinates(dzone);
@@ -34,15 +35,57 @@ class Dzone {
     return intersection;
   }
 
-  loopPath() {
+  runLogic() {
+    if (this.direction === 'v') {
+      let nextPosition = this.position.y + this.speed.y;
+      if (this.checkLimits(nextPosition)) {
+        this.speed.y *= -1;
+        nextPosition = this.position.y + this.speed.y;
+      }
+      this.position.y = nextPosition;
+    } else if (this.direction === 'h') {
+      this.position.x += this.speed.x;
+    }
 
+    /*if(this.direction === 'h'){
+     let nextPosition = this.position.x + this.speed.x
+     if(this.checkLimits(nextPosition)){
+      this.speed.x *=+1
+      nextPosition = this.position.x + this.speed.x
+     }
+     this.position.x = nextPosition
+     } else if(this.direction === 'v'){
+      this.position.y += this.speed.y;  
+      }*/
   }
 
-  draw () {
+  checkLimits(nextPosition) {
+    if (this.direction === 'v') {
+      //check vertical limits
+      if (nextPosition >= this.limit[1] || nextPosition <= this.limit[0]) {
+        return true;
+      }
+    } else if (this.direction === 'h') {
+      this.position.x += this.speed.x;
+    }
+  }
+
+  checkHorizontalLimit(nextPosition) {
+    if (this.direction === 'h') {
+      //check horizontal limits
+      if (nextPosition <= this.limit[1] || nextPosition >= this.limit[0]) {
+        return true;
+      }
+    } else if (this.direction === 'v') {
+      this.position.y -= this.speed.y;
+    }
+  }
+
+  draw() {
     const context = this.game.context;
     const {
-      position: { x, y },
-      dimensions: { x: width, y: height },
+      position: { x, y },
+      dimensions: { x: width, y: height }
     } = this;
 
     context.save();
@@ -53,4 +96,3 @@ class Dzone {
     context.restore();
   }
 }
-

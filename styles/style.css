@@ -11,3 +11,9 @@ body {
   margin: 0;
 }
 
+section{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-right: 1em;
+}
