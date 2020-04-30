@@ -15,7 +15,4 @@ window.addEventListener('load', () => {
     game.pause();
   });
 
-  $buttonReset.addEventListener('click', () => {
-    game.reset();
-  });
 });

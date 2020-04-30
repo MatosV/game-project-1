@@ -1,12 +1,10 @@
+//const jumpNoise = new Audio('../audio/jump.wav');
+
 class Game {
   constructor($canvas) {
     this.$canvas = $canvas;
     this.context = this.$canvas.getContext('2d');
-    this.isGameOver = false;
-
     this.setControlBindings();
-
-    this.reset();
   }
 
   setControlBindings() {
@@ -24,11 +22,15 @@ class Game {
           case 'space':
             //console.log('space')
             this.character.jump();
+            //this.url.jumpUrl();
+            //jumpNoise.play();
             break;
           case 'left':
+          //this.url.runUrl();
           //console.log('left')
           case 'right':
             //console.log('right')
+            //this.url.runUrl();
             this.character.move(value);
             break;
         }
@@ -36,41 +38,34 @@ class Game {
     });
   }
 
-  reset() {
-   
-  }
-
-  pause() {
-    this.runing = false;
-  }
-
-  gameOver() {
-    this.isGameOver = true;
-    this.frame = window.requestAnimationFrame((timestamp) => this.gameOver(timestamp));
-
-    this.reset();
-  }
-
-  gameOverScreen() {
-    this.context.fillStyle = 'rgba(0,0,0,0.5)';
-    this.context.fillRect(0, 0, canvas.width, canvas.height);
-
-    this.context.font = '100px serif';
-    this.context.fillStyle = 'black';
-    this.context.textAlign = 'center';
-    this.context.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+  clear() {
+    const { width, height } = this.$canvas;
+    this.context.clearRect(0, 0, width, height);
   }
 
   start() {
-    this.runing = true;
-
+    //CLASSES
     this.character = new Character(this);
     this.movement = new Movement(this);
+    this.url = new Urls(this);
     this.obstacles = [];
     this.dzone = [];
     this.randomizeObstacles();
     this.dzoneChain();
-    this.loop();
+    this.isGameOver = false;
+    if (!this.isRunning) {
+      this.isRunning = true;
+      this.loop();
+    }
+  }
+
+  pause() {
+    if (!this.isRunning) {
+      this.isRunning = true;
+      this.loop();
+    } else {
+      this.isRunning = false;
+    }
   }
 
   randomizeObstacles() {
@@ -139,9 +134,9 @@ class Game {
     this.obstacles.push(obstacle3);
 
     const obstacle4 = new Obstacle(this, {
-      x: 50,
+      x: 110,
       y: 150,
-      width: 180,
+      width: 120,
       height: 20
     });
     this.obstacles.push(obstacle4);
@@ -212,7 +207,7 @@ class Game {
       height: 80,
       direction: 'v',
       limit: [0, height / 2.4],
-      speedY: 7
+      speedY: 6
     });
     this.dzone.push(chain2);
 
@@ -337,31 +332,40 @@ class Game {
     }
   }
 
-  clear() {
-    const { width, height } = this.$canvas;
-    this.context.clearRect(0, 0, width, height);
+  gameOver() {
+    this.isGameOver = true;
+  }
+
+  gameOverScreen() {
+    this.context.fillStyle = 'rgba(0,0,0,0.1)';
+    this.context.fillRect(0, 0, canvas.width, canvas.height);
+
+    //GAME OVER
+    this.context.font = '100px fantasy';
+    this.context.fillStyle = 'red';
+    this.context.fillText('OVER', canvas.width / 2 + 110, canvas.height / 2 + 40);
+
+    this.context.textAlign = 'center';
+    this.context.font = '100px fantasy';
+    this.context.fillStyle = 'black';
+    this.context.fillText('GAME ', canvas.width / 2, canvas.height / 2);
+
+    //PRESS START TO GO AGAIN
+    this.context.textAlign = 'center';
+    this.context.font = '30px fantasy';
+    this.context.fillStyle = 'black';
+    this.context.fillText('press', canvas.width / 2, canvas.height / 2 + 210);
+
+    this.context.font = '30px fantasy';
+    this.context.fillStyle = 'red';
+    this.context.fillText('START ', canvas.width / 2 + 80, canvas.height / 2 + 210);
+
+    this.context.font = '30px fantasy';
+    this.context.fillStyle = 'black';
+    this.context.fillText('to go again', canvas.width / 2 + 190, canvas.height / 2 + 210);
   }
 
   draw() {
-    //tens que meter a logica do loop dentro do if
-
-    /*
-      for (let obstacle of this.obstacles) obstacle.draw();
-      for (let dz of this.dzone) dz.draw();
-      this.character.draw();
-
-      if(this.ifGameOver){
-        setTimeout(() => {
-          this.draw();
-        } else {
-         this.game.context.fillStyle = 'red';
-         this.game.context.fillText('GAME OVER', 100, 100);
-        
-          console.log('Game over'); 
-        }
-      }
-    */
-
     if (!this.isGameOver) {
       for (let obstacle of this.obstacles) obstacle.draw();
       for (let dz of this.dzone) dz.draw();
@@ -373,16 +377,13 @@ class Game {
   }
 
   loop() {
+    //console.log('im running');
     this.runLogic();
     this.clear();
     this.draw();
     //this.frame = window.requestAnimationFrame(timestamp => this.gameOverScreen(timestamp));
-    window.requestAnimationFrame((timestamp) => this.loop(timestamp));
-
-    /*
-    if(this.runing) {
-      setTimeout(() =>
-      this.loop());
-    }*/
+    if (this.isRunning) {
+      window.requestAnimationFrame((timestamp) => this.loop(timestamp));
+    }
   }
 }

@@ -4,18 +4,18 @@ class Character {
 
     this.position = {
       x: 1052,
-      y: 120
+      y: 70
     };
     this.velocity = {
-      x: 0,
+      x: 40,
       y: 0
     };
     this.dimensions = {
-      x: 20,
-      y: 30
+      x: 55,
+      y: 60
     };
     this.gravity = 10;
-    this.friction = 95;
+    this.friction = 30;
   }
 
   jump() {
@@ -86,8 +86,9 @@ class Character {
       });
 
       if (horizontalIntersection && verticalIntersection) {
-        console.log('Game over');
-        this.game.gameOver();
+        //console.log('Game over');
+        this.game.isRunning = false;
+        this.game.isGameOver = true;
       }
     }
   }
@@ -99,11 +100,16 @@ class Character {
       dimensions: { x: width, y: height }
     } = this;
 
+    
     context.save();
 
     context.fillStyle = '#dadada';
     context.fillRect(x, y, width, height);
 
     context.restore();
+
+    
+
+   
   }
 }

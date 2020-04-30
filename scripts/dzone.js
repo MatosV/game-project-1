@@ -25,6 +25,8 @@ class Dzone {
     this.speed = { x: speedX, y: speedY };
     this.direction = direction;
     this.limit = limit;
+
+    //window.requestAnimationFrame(animate);
   }
 
   cIntersection(character) {
@@ -88,11 +90,20 @@ class Dzone {
       dimensions: { x: width, y: height }
     } = this;
 
+    
     context.save();
 
     context.fillStyle = 'green';
     context.fillRect(x, y, width, height);
 
     context.restore();
+      
+    /*
+    img = new Image();
+    img.src = "../images/objects/Saw.png"
+    context.img(x, y, width, height);
+     */
+
+ 
   }
 }
