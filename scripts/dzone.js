@@ -25,8 +25,6 @@ class Dzone {
     this.speed = { x: speedX, y: speedY };
     this.direction = direction;
     this.limit = limit;
-
-    //window.requestAnimationFrame(animate);
   }
 
   cIntersection(character) {
@@ -48,17 +46,6 @@ class Dzone {
     } else if (this.direction === 'h') {
       this.position.x += this.speed.x;
     }
-
-    /*if(this.direction === 'h'){
-     let nextPosition = this.position.x + this.speed.x
-     if(this.checkLimits(nextPosition)){
-      this.speed.x *=+1
-      nextPosition = this.position.x + this.speed.x
-     }
-     this.position.x = nextPosition
-     } else if(this.direction === 'v'){
-      this.position.y += this.speed.y;  
-      }*/
   }
 
   checkLimits(nextPosition) {
@@ -72,38 +59,18 @@ class Dzone {
     }
   }
 
-  checkHorizontalLimit(nextPosition) {
-    if (this.direction === 'h') {
-      //check horizontal limits
-      if (nextPosition <= this.limit[1] || nextPosition >= this.limit[0]) {
-        return true;
-      }
-    } else if (this.direction === 'v') {
-      this.position.y -= this.speed.y;
-    }
-  }
-
-  draw() {
+  draw(timestamp) {
     const context = this.game.context;
     const {
       position: { x, y },
       dimensions: { x: width, y: height }
     } = this;
 
-    
     context.save();
 
     context.fillStyle = 'green';
     context.fillRect(x, y, width, height);
 
     context.restore();
-      
-    /*
-    img = new Image();
-    img.src = "../images/objects/Saw.png"
-    context.img(x, y, width, height);
-     */
-
- 
   }
 }

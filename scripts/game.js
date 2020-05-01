@@ -1,4 +1,4 @@
-//const jumpNoise = new Audio('../audio/jump.wav');
+const jumpNoise = new Audio('../audio/jump.wav');
 
 class Game {
   constructor($canvas) {
@@ -20,17 +20,13 @@ class Game {
         const value = codeMap[code];
         switch (value) {
           case 'space':
-            //console.log('space')
             this.character.jump();
-            //this.url.jumpUrl();
-            //jumpNoise.play();
+            jumpNoise.play();
+
             break;
           case 'left':
-          //this.url.runUrl();
-          //console.log('left')
+            this.character.move(value);
           case 'right':
-            //console.log('right')
-            //this.url.runUrl();
             this.character.move(value);
             break;
         }
@@ -48,14 +44,16 @@ class Game {
     this.character = new Character(this);
     this.movement = new Movement(this);
     this.url = new Urls(this);
+    this.treasure = new Treasure(this);
     this.obstacles = [];
     this.dzone = [];
     this.randomizeObstacles();
     this.dzoneChain();
     this.isGameOver = false;
+    this.isWin = false;
     if (!this.isRunning) {
       this.isRunning = true;
-      this.loop();
+      this.loop(0);
     }
   }
 
@@ -72,6 +70,7 @@ class Game {
     const width = this.$canvas.width;
     const height = this.$canvas.height;
     //TOP WALL
+
     this.obstacles.push(
       new Obstacle(this, {
         x: 0,
@@ -107,6 +106,7 @@ class Game {
         height
       })
     );
+
     //TOP OBSTACLES
     //GOING RIGHT to LEFT
     const obstacle1 = new Obstacle(this, {
@@ -134,7 +134,7 @@ class Game {
     this.obstacles.push(obstacle3);
 
     const obstacle4 = new Obstacle(this, {
-      x: 110,
+      x: 100,
       y: 150,
       width: 120,
       height: 20
@@ -190,9 +190,9 @@ class Game {
 
     //TOP CHAIN
     const chain = new Dzone(this, {
-      x: 800,
+      x: 805,
       y: 10,
-      width: 60,
+      width: 50,
       height: 80,
       direction: 'v',
       limit: [0, height / 2.5],
@@ -201,72 +201,37 @@ class Game {
     this.dzone.push(chain);
 
     const chain2 = new Dzone(this, {
-      x: 500,
+      x: 510,
       y: 10,
-      width: 120,
+      width: 105,
       height: 80,
       direction: 'v',
       limit: [0, height / 2.4],
-      speedY: 6
+      speedY: 5
     });
     this.dzone.push(chain2);
 
     const chain3 = new Dzone(this, {
-      x: 230,
+      x: 235,
       y: 10,
-      width: 90,
+      width: 80,
       height: 80,
       direction: 'v',
       limit: [0, height / 2.5],
-      speedY: 6
+      speedY: 5
     });
     this.dzone.push(chain3);
 
     const chain4 = new Dzone(this, {
       x: 10,
       y: 10,
-      width: 60,
+      width: 30,
       height: 80,
       direction: 'v',
       limit: [0, height / 2.5],
-      speedY: 10
+      speedY: 7
     });
     this.dzone.push(chain4);
-
-    /*
-
-    //MID CHAIN
-    const chain5 = new Dzone(this, {
-      x: 220,
-      y: 280,
-      width: 80,
-      height: 40,
-      direction: 'h'
-      //limit: [0,width/2]
-    });
-    this.dzone.push(chain5);
-
-    const chain6 = new Dzone(this, {
-      x: 580,
-      y: 280,
-      width: 80,
-      height: 40,
-      direction: 'h'
-      //limit: [0,width/2]
-    });
-    this.dzone.push(chain6);
-
-    const chain7 = new Dzone(this, {
-      x: 820,
-      y: 280,
-      width: 80,
-      height: 40,
-      direction: 'h'
-      //limit: [0,width/2]
-    });
-    this.dzone.push(chain7);
-
-    */
 
     //BOTTOM CHAIN
     const chain8 = new Dzone(this, {
@@ -275,8 +240,8 @@ class Game {
       width: 80,
       height: 40,
       direction: 'v',
-      limit: [(height * 3) / 4, height],
-      speedY: 10
+      limit: [(height * 3) / 4, height - 40],
+      speedY: 2
     });
     this.dzone.push(chain8);
 
@@ -286,8 +251,8 @@ class Game {
       width: 80,
       height: 40,
       direction: 'v',
-      limit: [(height * 3) / 4, height],
-      speedY: 9
+      limit: [(height * 3) / 4, height - 45],
+      speedY: 2
     });
     this.dzone.push(chain9);
 
@@ -297,32 +262,10 @@ class Game {
       width: 80,
       height: 40,
       direction: 'v',
-      limit: [(height * 3) / 4, height],
-      speedY: 12
+      limit: [(height * 3) / 4, height - 45],
+      speedY: 1
     });
     this.dzone.push(chain10);
-
-    /*
-    const chain11 = new Dzone(this, {
-      x: 220,
-      y: 560,
-      width: 80,
-      height: 40,
-      direction: 'h'
-      //limit: [0,width/2]
-    });
-    this.dzone.push(chain11);
-
-    const chain12 = new Dzone(this, {
-      x: 820,
-      y: 560,
-      width: 80,
-      height: 40,
-      direction: 'h',
-      limit: [0, width / 2]
-    });
-    this.dzone.push(chain12);
-    */
   }
 
   runLogic() {
@@ -365,23 +308,26 @@ class Game {
     this.context.fillText('to go again', canvas.width / 2 + 190, canvas.height / 2 + 210);
   }
 
-  draw() {
+  win() {
+    this.isWin = true;
+  }
+
+  draw(timestamp) {
     if (!this.isGameOver) {
       for (let obstacle of this.obstacles) obstacle.draw();
       for (let dz of this.dzone) dz.draw();
-      this.character.draw();
+      this.character.draw(timestamp);
+      this.treasure.draw(timestamp);
     } else {
       this.gameOverScreen();
-      //this.frame = window.requestAnimationFrame(timestamp => this.gameOverScreen(timestamp));
     }
   }
 
-  loop() {
-    //console.log('im running');
+  loop(timestamp) {
     this.runLogic();
     this.clear();
-    this.draw();
-    //this.frame = window.requestAnimationFrame(timestamp => this.gameOverScreen(timestamp));
+    this.draw(timestamp);
+
     if (this.isRunning) {
       window.requestAnimationFrame((timestamp) => this.loop(timestamp));
     }

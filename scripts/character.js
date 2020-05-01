@@ -8,14 +8,14 @@ class Character {
     };
     this.velocity = {
       x: 40,
-      y: 0
+      y: 90
     };
     this.dimensions = {
-      x: 55,
+      x: 45,
       y: 60
     };
-    this.gravity = 10;
-    this.friction = 30;
+    this.gravity = 8;
+    this.friction = 50;
   }
 
   jump() {
@@ -91,25 +91,35 @@ class Character {
         this.game.isGameOver = true;
       }
     }
+
+    for (let treasure of this.game.treasure){
+      const horizontalIntersection = treasure.tIntersection({
+        position,
+        dimensions
+      });
+      const verticalIntersection = treasure.tIntersection({
+        position,
+        dimensions
+      });
+
+      if (horizontalIntersection && verticalIntersection) {
+        this.game.isRunning = false;
+        this.game.isWin = true;
+    }
   }
+}
 
-  draw() {
-    const context = this.game.context;
-    const {
-      position: { x, y },
-      dimensions: { x: width, y: height }
-    } = this;
-
-    
+  draw(timestamp) {
+   
+    /*
     context.save();
 
     context.fillStyle = '#dadada';
     context.fillRect(x, y, width, height);
 
     context.restore();
+    */
 
-    
-
-   
-  }
+    this.game.url.idleUrl(timestamp);
+  }  
 }
