@@ -17,6 +17,14 @@ const getCoordinates = object => ({
   ...object
 });
 
+const treasureCoordinates = (object) => ({
+  top: object.position.y,
+  right: object.position.x + object.dimensions.x,
+  bottom: object.position.y + object.dimensions.y,
+  left: object.position.x,
+  ...object
+});
+
 class Obstacle {
   constructor (game, { x, y, width, height }) {
     this.game = game;
@@ -31,6 +39,7 @@ class Obstacle {
     const intersection = checkIntersection(characterBlock, obstacleBlock);
     return intersection;
   }
+
 
   draw () {
     const context = this.game.context;

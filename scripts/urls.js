@@ -17,7 +17,7 @@ for (let i = 1; i <= 12; i++) {
 }
 */
 
-for (let i = 1; i <= 12; i++) {
+for (let i = 1; i <= 7; i++) {
   treasureUrl.push(`images/treasure/${i}.png`);
 }
 
@@ -25,11 +25,9 @@ class Urls {
   constructor(game) {
     this.game = game;
 
-    this.spritersTimer = 0;
-    this.spritersInterval = 8;
-
     this.imagesArr = this.idleLayers();
     this.imageIndex = 0;
+
     /*
     this.imagesArrJ = this.jumpLayers();
     this.imageIndexJ = 0;
@@ -71,8 +69,8 @@ class Urls {
     this.imageIndex++;
   }
 
-  /*
-  jumpLayers() {
+  /*    
+    jumpLayers() {
     const imagesArrJ = [];
     jumpUrl.map((url, index) => {
       const imageJump = new Image();
@@ -126,11 +124,8 @@ class Urls {
   */
 
   treasureLayers() {
-    this.spritersTimer = 0;
-    this.spritersInterval = 8;
-
     const imagesArrT = [];
-    idleUrl.map((url, index) => {
+    treasureUrl.map((url, index) => {
       const imageTreasure = new Image();
       imageTreasure.src = url;
       imagesArrT.push(imageTreasure);
@@ -141,6 +136,7 @@ class Urls {
   treasureUrl() {
     const treasure = this.game.treasure;
     const context = this.game.context;
+
     this.imageIndexT = this.imageIndexT > 6 ? (this.imageIndexT = 0) : this.imageIndexT;
     context.drawImage(
       this.imagesArrT[this.imageIndexT],

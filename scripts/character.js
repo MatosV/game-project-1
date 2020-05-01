@@ -15,7 +15,7 @@ class Character {
       y: 60
     };
     this.gravity = 8;
-    this.friction = 50;
+    this.friction = 60;
   }
 
   jump() {
@@ -92,34 +92,23 @@ class Character {
       }
     }
 
-    for (let treasure of this.game.treasure){
-      const horizontalIntersection = treasure.tIntersection({
-        position,
-        dimensions
-      });
-      const verticalIntersection = treasure.tIntersection({
-        position,
-        dimensions
-      });
-
-      if (horizontalIntersection && verticalIntersection) {
-        this.game.isRunning = false;
-        this.game.isWin = true;
+    //treasure intersection
+    if (this.game.treasure.treasureIntersection({ position, dimensions })) {
+      this.game.isRunning = false;
+      this.game.isWin = true;
     }
   }
-}
 
   draw(timestamp) {
-   
     /*
     context.save();
 
     context.fillStyle = '#dadada';
     context.fillRect(x, y, width, height);
 
-    context.restore();
+    context.restore();    
     */
-
+   
     this.game.url.idleUrl(timestamp);
-  }  
+  }
 }

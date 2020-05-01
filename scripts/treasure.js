@@ -1,18 +1,10 @@
-const treasureCoordinates = (object) => ({
-  top: object.position.y,
-  right: object.position.x + object.dimensions.x,
-  bottom: object.position.y + object.dimensions.y,
-  left: object.position.x,
-  ...object
-});
-
 class Treasure {
   constructor(game) {
     this.game = game;
 
     this.position = {
-      x: 80,
-      y: 600
+      x: 40,
+      y: 520
     };
 
     this.dimensions = {
@@ -21,18 +13,15 @@ class Treasure {
     };
   }
 
-  tIntersection(character) {
+  treasureIntersection(character) {
     const treasure = this;
-    const characterBlock = treasureCoordinates(character);
-    const treasureBlock = treasureCoordinates(treasure);
-    const intersection = tIntersection(characterBlock, treasureBlock);
+    const characterBlock = getCoordinates(character);
+    const treasureBlock = getCoordinates(treasure);
+    const intersection = checkIntersection(characterBlock, treasureBlock);
     return intersection;
   }
 
-  runLogic() {}
-
   draw(timestamp) {
-    console.log('here')
     this.game.url.treasureUrl(timestamp);
   }
 }

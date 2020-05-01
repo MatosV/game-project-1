@@ -1,4 +1,6 @@
 const jumpNoise = new Audio('../audio/jump.wav');
+const bg = new Audio('/audio/bg_music.wav');
+
 
 class Game {
   constructor($canvas) {
@@ -22,7 +24,6 @@ class Game {
           case 'space':
             this.character.jump();
             jumpNoise.play();
-
             break;
           case 'left':
             this.character.move(value);
@@ -41,6 +42,8 @@ class Game {
 
   start() {
     //CLASSES
+    bg.play();
+    bg.volume = 0.1;
     this.character = new Character(this);
     this.movement = new Movement(this);
     this.url = new Urls(this);
@@ -63,6 +66,7 @@ class Game {
       this.loop();
     } else {
       this.isRunning = false;
+      bg.pause();
     }
   }
 
@@ -241,7 +245,7 @@ class Game {
       height: 40,
       direction: 'v',
       limit: [(height * 3) / 4, height - 40],
-      speedY: 2
+      speedY: 1
     });
     this.dzone.push(chain8);
 
@@ -252,7 +256,7 @@ class Game {
       height: 40,
       direction: 'v',
       limit: [(height * 3) / 4, height - 45],
-      speedY: 2
+      speedY: 1
     });
     this.dzone.push(chain9);
 
@@ -263,7 +267,7 @@ class Game {
       height: 40,
       direction: 'v',
       limit: [(height * 3) / 4, height - 45],
-      speedY: 1
+      speedY: 2
     });
     this.dzone.push(chain10);
   }
@@ -312,14 +316,36 @@ class Game {
     this.isWin = true;
   }
 
+  winScreen() {
+    this.context.fillStyle = 'rgba(0,0,0,0.1)';
+    this.context.fillRect(0, 0, canvas.width, canvas.height);
+
+    //Time Flies When You’re Having RUM
+    this.context.font = '100px fantasy';
+    this.context.fillStyle = 'red';
+    this.context.fillText(
+      'When You’re Having RUM ',
+      canvas.width / 2 - 500,
+      canvas.height / 2 + 100
+    );
+
+    this.context.textAlign = 'center';
+    this.context.font = '100px fantasy';
+    this.context.fillStyle = 'black';
+    this.context.fillText('Time Flies ', canvas.width / 2, canvas.height / 2);
+  }
+
   draw(timestamp) {
-    if (!this.isGameOver) {
+    if (!this.isGameOver && !this.isWin) {
       for (let obstacle of this.obstacles) obstacle.draw();
       for (let dz of this.dzone) dz.draw();
       this.character.draw(timestamp);
       this.treasure.draw(timestamp);
-    } else {
+    } else if (this.isGameOver) {
       this.gameOverScreen();
+      bg.pause();
+    } else if (this.isWin) {
+      this.winScreen();
     }
   }
 
@@ -327,7 +353,6 @@ class Game {
     this.runLogic();
     this.clear();
     this.draw(timestamp);
-
     if (this.isRunning) {
       window.requestAnimationFrame((timestamp) => this.loop(timestamp));
     }
